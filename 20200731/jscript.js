@@ -291,19 +291,12 @@ jQuery(function(){
 	var taxonomyIndex = $(".seminar-event__taxonomyButton").index(this);
 	$(".seminar-event__taxonomyButton").removeClass("-active");
 	$(this).addClass("-active");
-	$(".seminar-event__item.-show").css('height', 'auto');
+	$(".seminar-event__item.-show").css("height", "auto");
 
-	if(taxonomyIndex > 5) {
-		$(".seminar-event__calendar").removeClass("-show");
-		$(".seminar-event__calendarCategory").css('height', 'auto');
-		$(".seminar-event__calendarCategories").css('display', 'block');
-		$(".seminar-event__calendarCategory").removeClass("-show").eq(taxonomyIndex-6).addClass('-show');
-		$('.seminar-event__calendarCategory').css('display', 'none');
-		$('.seminar-event__calendarCategory.-show').css('display', 'block');
-	}
+	var numTaxonomy = $(".seminar-event__taxonomyButton").length;
 
     // カテゴリで絞り込み表示
-    if(taxonomyIndex < 6) {
+    if(taxonomyIndex < numTaxonomy/2) {
 		$('.article').show();
 		var classNames = $(this).attr('class');
 		var className = classNames.split(' ').filter(function(className) {
@@ -317,6 +310,15 @@ jQuery(function(){
 			}
 		});
   	}
+
+	if(taxonomyIndex > (numTaxonomy/2)-1) {
+		$(".seminar-event__calendar").removeClass("-show");
+		$(".seminar-event__calendarCategory").css('height', 'auto');
+		$(".seminar-event__calendarCategories").css('display', 'block');
+		$(".seminar-event__calendarCategory").removeClass("-show").eq(taxonomyIndex-6).addClass('-show');
+		$('.seminar-event__calendarCategory').css('display', 'none');
+		$('.seminar-event__calendarCategory.-show').css('display', 'block');
+	}
   });
 
   $('.seminar-event__selector').change(function() {
