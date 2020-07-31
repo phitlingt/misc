@@ -11,7 +11,35 @@
 
   <h2 class="archive__title">カテゴリーで絞り込む</h2>
   <div class="seminar-event__categoryList">
+     <?php
+        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+        $args = array(
+            'post_type' => 'post',
+            'posts_per_page' => 12,
+            'paged' => $paged,
+        );
+        $the_query = new WP_Query($args);
+    ?>
     <div class="seminar-event__tagItem -active">
+      <?php
+        $categories = get_categories($args);
+        foreach ($categories as $cat) {
+            //(例)classにスラッグを指定したカテゴリーのラベル
+            echo '<button class="seminar-event__taxonomyButton pc ' . $cat->slug . '">'.$cat->name.'</button>';
+        }
+      ?>
+      <div class="seminar-event__selectorWrapper sp">
+        <select class="seminar-event__eventSelector">
+            <option value="all">すべて</option>
+            <?php
+              foreach ($categories as $cat) {
+                  echo '<option value="' . $cat->slug . '">' . $cat-> name . '</option>';
+              }
+            ?>
+          </select>
+      </div>
+    </div>
+	<div class="seminar-event__tagItem">
         <?php
           $taxonomies = get_terms('event-category');
           foreach ($taxonomies as $taxonomy) {
@@ -31,55 +59,13 @@
           </select>
         </div>
     </div>
-     <?php
-        $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        $args = array(
-            'post_type' => 'post',
-            'posts_per_page' => 12,
-            'paged' => $paged,
-        );
-        $the_query = new WP_Query($args);
-    ?>
-    <div class="seminar-event__tagItem">
-      <?php
-        $categories = get_categories($args);
-        foreach ($categories as $cat) {
-            //(例)classにスラッグを指定したカテゴリーのラベル
-            echo '<button class="seminar-event__taxonomyButton pc ' . $cat->slug . '">'.$cat->name.'</button>';
-        }
-      ?>
-      <div class="seminar-event__selectorWrapper sp">
-        <select class="seminar-event__eventSelector">
-            <option value="all">すべて</option>
-            <?php
-              foreach ($categories as $cat) {
-                  echo '<option value="' . $cat->slug . '">' . $cat-> name . '</option>';
-              }
-            ?>
-          </select>
-      </div>
-    </div>
   </div>
   <ul class="seminar-event__tab">
-    <li class="seminar-event__tabButton -show">カレンダー</li>
-    <li class="seminar-event__tabButton">イベント一覧</li>
+	<li class="seminar-event__tabButton -show">イベント一覧</li>
+	<li class="seminar-event__tabButton">カレンダー</li>
   </ul>
   <div class="seminar-event__list">
     <div class="seminar-event__item -show">
-        <div class="seminar-event__calendar -show">
-          <?php echo do_shortcode('[eo_fullcalendar]'); ?>
-        </div>
-        <div class="seminar-event__calendarCategories">
-          <?php foreach ($taxonomies as $taxonomy) {
-                $calendarCategory = '[eo_fullcalendar category="' .$taxonomy->slug .'"]'; ?>
-           <div class="seminar-event__calendarCategory">
-             <?php echo do_shortcode($calendarCategory); ?>
-           </div>
-        <?php
-            } ?>
-        </div>
-    </div>
-    <div class="seminar-event__item">
       <?php if ($the_query->have_posts()) : ?>
       <ol id="post_list" class="clearfix">
         <?php while ($the_query->have_posts()) : $the_query->the_post(); ?>
@@ -157,6 +143,20 @@
               echo subPagination();
           }
         ?>
+    </div>
+	<div class="seminar-event__item -show">
+        <div class="seminar-event__calendar -show">
+          <?php echo do_shortcode('[eo_fullcalendar]'); ?>
+        </div>
+        <div class="seminar-event__calendarCategories">
+          <?php foreach ($taxonomies as $taxonomy) {
+                $calendarCategory = '[eo_fullcalendar category="' .$taxonomy->slug .'"]'; ?>
+           <div class="seminar-event__calendarCategory">
+             <?php echo do_shortcode($calendarCategory); ?>
+           </div>
+        <?php
+            } ?>
+        </div>
     </div>
   </div>
 
